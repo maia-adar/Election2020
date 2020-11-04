@@ -1,0 +1,70 @@
+import random
+import pandas as pd
+
+# Input what you think are probabilities that Biden wins each state
+
+# Joe needs 32 more votes to win. Trump needs 57 votes to win. There are 87 left.
+
+
+def president_win(p_ga, p_ak, p_pa, p_wi, p_mi, p_nc, p_maine_cd2, p_nv):
+
+    num_electoral_votes = pd.Series([16, 3, 20, 10, 16, 15, 1, 6])
+    prob_win_biden = pd.Series([p_ga, p_ak, p_pa, p_wi, p_mi, p_nc, p_maine_cd2, p_nv])
+
+    states_dict = {'num_electoral_votes': num_electoral_votes, 'prob_win_biden': prob_win_biden}
+
+    states_df = pd.DataFrame(states_dict)
+
+    num_biden = 0
+    num_trump = 0
+
+    for i, row in states_df.iterrows():
+        if random.random() < row['prob_win_biden']:
+            num_biden += row['num_electoral_votes']
+        else:
+            num_trump += row['num_electoral_votes']
+
+    if num_biden >= 32:
+        winner = 'biden'
+
+    elif num_trump >= 57:
+        winner = 'trump'
+
+    else:
+        winner = '?'
+
+    return winner
+
+
+
+
+# Your state predictions
+
+p_ga = 0.5
+p_ak = 0.5
+p_pa = 0.5
+p_wi = 0.5
+p_mi = 0.5
+p_nc = 0.5
+p_maine_cd2 = 0.5
+p_nv = 0.9
+
+# Simulation
+
+rounds = 1000
+count_trump = 0
+count_biden = 0
+
+for i in range(rounds):
+    winner = president_win(p_ga, p_ak, p_pa, p_wi, p_mi, p_nc, p_maine_cd2, p_nv)
+    if winner == 'trump':
+        count_trump += 1
+    if winner == 'biden':
+        count_biden += 1
+    if winner == '?':
+        print('?')
+
+
+print('Prob win Trump:', count_trump/rounds)
+print('Prob win Biden:', count_biden/rounds)
+
